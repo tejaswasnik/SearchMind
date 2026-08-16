@@ -1,21 +1,24 @@
 import { useState } from "react";
-import { Link } from "react-router";
-
+import { Link, useNavigate } from "react-router";
+import { useAuth } from "../hook/useAuth.js";
 function Register() {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
-
+  const { handleRegister } = useAuth();
+  const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
+    await handleRegister({ email: formData.email, username: formData.username, password: formData.password });
     console.log("Register submitted:", formData);
+    navigate("/");
     // TODO: integrate with auth API
   };
 

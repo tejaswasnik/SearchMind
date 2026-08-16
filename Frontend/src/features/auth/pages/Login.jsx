@@ -1,21 +1,23 @@
 import { useState } from "react";
-import { Link } from "react-router";
-
+import { Link, useNavigate } from "react-router";
+import { useAuth } from "../hook/useAuth.js";
 function Login() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-
+  const {handleLogin} = useAuth();
+const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
+    await handleLogin({ email: formData.email, password: formData.password });
     console.log("Login submitted:", formData);
-    // TODO: integrate with auth API
+    navigate("/");
   };
 
   return (
@@ -107,14 +109,7 @@ function Login() {
                     strokeLinejoin="round"
                     className="h-4 w-4"
                   >
-                    <rect
-                      width="18"
-                      height="11"
-                      x="3"
-                      y="11"
-                      rx="2"
-                      ry="2"
-                    />
+                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
                 </span>
