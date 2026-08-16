@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.routes.js";
+import morgen from "morgan";
 const app = express();
 import "dotenv/config";
 // --- Core Middleware ---
@@ -10,10 +11,15 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "*",
+    origin: "http://localhost:5173",
     credentials: true,
   }),
 );
+app.use(morgen("dev"));
+app.use(cors({
+  origin: "http://localhost:5173", // Replace with your frontend URL
+  credentials: true, // Allow cookies to be sent
+}))
 app.use("/api/auth", authRouter);
 // --- Health Check ---
 app.get("/api/v1/health", (_req, res) => {
