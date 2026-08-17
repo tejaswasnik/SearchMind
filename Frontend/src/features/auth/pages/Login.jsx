@@ -1,13 +1,17 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../hook/useAuth.js";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router";
 function Login() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const {handleLogin} = useAuth();
-const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.user);
+  const loading = useSelector((state) => state.auth.loading);
+  const { handleLogin } = useAuth();
+  const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -18,8 +22,10 @@ const navigate = useNavigate();
     await handleLogin({ email: formData.email, password: formData.password });
     console.log("Login submitted:", formData);
     navigate("/");
-  };
-
+  }
+  if (!loading && user) {
+    return <Navigate to="/" replace />;
+  }
   return (
     <div className="flex min-h-screen bg-[#09090b] text-white">
       {/* ── Left Panel: Form ── */}

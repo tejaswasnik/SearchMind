@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../hook/useAuth.js";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router";
 function Register() {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
+  const user = useSelector((state) => state.auth.user);
+  const loading = useSelector((state) => state.auth.loading);
   const { handleRegister } = useAuth();
   const navigate = useNavigate();
   const handleChange = (e) => {
@@ -16,12 +20,18 @@ function Register() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    await handleRegister({ email: formData.email, username: formData.username, password: formData.password });
+    await handleRegister({
+      email: formData.email,
+      username: formData.username,
+      password: formData.password,
+    });
     console.log("Register submitted:", formData);
     navigate("/");
     // TODO: integrate with auth API
-  };
-
+  }
+  if (!loading && user) {
+    return <Navigate to="/" replace />;
+  }
   return (
     <div className="flex min-h-screen bg-[#09090b] text-white">
       {/* ── Left Panel: Form ── */}
@@ -148,14 +158,7 @@ function Register() {
                     strokeLinejoin="round"
                     className="h-4 w-4"
                   >
-                    <rect
-                      width="18"
-                      height="11"
-                      x="3"
-                      y="11"
-                      rx="2"
-                      ry="2"
-                    />
+                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
                 </span>
