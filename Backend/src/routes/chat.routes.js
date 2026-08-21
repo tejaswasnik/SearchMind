@@ -4,6 +4,7 @@ import {
   getMessages,
   sendMessage,
   getChats,
+  deleteChat,
 } from "../controllers/chat.controller.js";
 
 const chatRouter = Router();
@@ -11,4 +12,5 @@ const chatRouter = Router();
 chatRouter.post("/message", authUser, sendMessage);
 chatRouter.get("/", authUser, getChats);
 chatRouter.get("/:chatId/messages", authUser, getMessages);
+chatRouter.delete("/delete/:chatId", authUser, deleteChat);
 export default chatRouter;
