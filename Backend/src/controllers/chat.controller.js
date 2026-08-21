@@ -8,7 +8,7 @@ export async function sendMessage(req, res) {
     chat = null;
   if (!chatId) {
     title = await generateChatTitle(message);
-   
+
     chat = await chatModel.create({
       user: req.user.userId,
       title: title,
@@ -36,5 +36,34 @@ export async function sendMessage(req, res) {
     title,
     chat,
     aiMessage,
+  });
+}
+
+export async function getChats(req, res) {
+  const user = req.user;
+  const chats = await chatModel.find({ user: req.user.userId });
+  res.status(200).json({
+    message: "Chats retrieved successfully.",
+    chats,
+  });
+}
+
+export async function getMessages(req, res) {
+  const { chatId } = req.params;
+  const chat = await chatModel.findOne({
+    _id: chatId,
+    user: req.user.userId,
+  });
+
+  if (!chat) {
+    return res.status(404).json({
+      message: "Chat not found",
+    });
+  }
+
+  const messages = await messageModel.find({ chat: chatId });
+  res.status(200).json({
+    message: "Messages  retrieved successfully",
+    messages,
   });
 }
